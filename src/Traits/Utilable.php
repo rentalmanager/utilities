@@ -51,6 +51,7 @@ trait Utilable
         {
             $this->attachUtility($utility);
         }
+
         return $this;
     }
 
@@ -69,7 +70,8 @@ trait Utilable
      */
     public function detachUtilities($utilities = [])
     {
-        if (empty( $utilities ) ) {
+
+        if (empty($utilities)) {
             $utilities = $this->utilities()->get();
         }
 
@@ -85,7 +87,7 @@ trait Utilable
      * @param bool $detaching
      * @return $this
      */
-    public function syncUtilities($utilities, $detaching = true)
+    public function syncUtilities($utilities = [], $detaching = true)
     {
         return $this->syncUtilableModels('utilities', $utilities, $detaching);
     }
@@ -94,7 +96,7 @@ trait Utilable
      * @param $utilities
      * @return $this
      */
-    public function syncUtilitiesWithoutDetaching($utilities)
+    public function syncUtilitiesWithoutDetaching($utilities = [])
     {
         return $this->syncUtilities($utilities, false);
     }
@@ -132,7 +134,7 @@ trait Utilable
 
         $attributes = [];
         $objectType = Str::singular($relationship);
-        $object = RelationHelper::getIdFor($object, $objectType);
+        $object = RelationHelper::getIdFor($object, $objectType, 'utilities');
 
         $this->$relationship()->attach(
             $object,
@@ -159,7 +161,7 @@ trait Utilable
         $objectType = Str::singular($relationship);
         $relationshipQuery = $this->$relationship();
 
-        $object = RelationHelper::getIdFor($object, $objectType);
+        $object = RelationHelper::getIdFor($object, $objectType, 'utilities');
 
         $relationshipQuery->detach($object);
 
@@ -176,6 +178,10 @@ trait Utilable
      */
     public function syncUtilableModels($relationship, $objects, $detaching = true)
     {
+        if ( $objects && !empty( $objects) )
+        {
+
+        }
         if ( !RelationHelper::isValidRelationship($relationship) )
         {
             throw new InvalidArgumentException;
@@ -186,7 +192,7 @@ trait Utilable
 
         foreach ( $objects as $object )
         {
-            $mappedObjects[] = RelationHelper::getIdFor($object, $objectType);
+            $mappedObjects[] = RelationHelper::getIdFor($object, $objectType, 'utilities');
         }
 
         $relationshipToSync = $this->$relationship();
